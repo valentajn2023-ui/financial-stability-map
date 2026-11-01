@@ -626,7 +626,7 @@ function render(){
   backBtn.disabled=history.length===0;
   nextBtn.style.display=['complete','paid_offer','gift','finish'].includes(current)?'none':'inline-block';
   backBtn.style.display=current==='start'?'none':'inline-block';
-  nextBtn.textContent=current==='start'?'Начать':'Дальше';
+  nextBtn.textContent=current==='start'?'Начать':current==='result'?'Что дальше':'Дальше';
   nextBtn.disabled=false;
   const d=C.computeDerived(state);
   let h='';
@@ -871,7 +871,7 @@ async function goNext(){
   history.push(current);current=target;render();
 }
 function goBack(){if(!history.length)return;current=history.pop();render()}
-function updateProgress(){const seq=C.getBranchSequence(state),idx=Math.max(0,seq.indexOf(current));let p=current==='start'?0:current==='complete'?100:Math.min(96,Math.round(((idx+1)/seq.length)*100));document.getElementById('progressBar').style.width=p+'%';document.getElementById('progressLabel').textContent=p+'%';const labels={start:'Старт',about:'Обо мне',context:'Ваш запрос',family_status:'Семья',family_followup:'Семейные задачи',work:'Доход',business:'Бизнес / руководство',expenses:'Обязательные расходы',budget_tracking:'Учёт денег',tools:'Финансовые инструменты',investment_experience:'Опыт и критерии',goal_gate:'Финансовая цель',capital_goal:'Финансовая цель',goal_barriers:'Риски цели',future_work:'Будущий доход',future_income:'Будущий доход',reserve_gate:'Финансовая подушка',reserve:'Финансовая подушка',calc:'Первый расчёт',protection_gate:'Финансовая защита',protected_capital_hook:'Капитал и защита',priority:'Приоритеты',result:'Карта',paid_offer:'Персональный разбор',gift:'Персональный разбор',finish:'Персональный разбор',complete:'Готово'};document.getElementById('stepLabel').textContent=labels[current]||'Финансовая карта'}
+function updateProgress(){const seq=C.getBranchSequence(state),idx=Math.max(0,seq.indexOf(current));let p=current==='start'?0:['paid_offer','complete'].includes(current)?100:Math.min(96,Math.round(((idx+1)/seq.length)*100));document.getElementById('progressBar').style.width=p+'%';document.getElementById('progressLabel').textContent=p+'%';const labels={start:'Старт',about:'Обо мне',context:'Ваш запрос',family_status:'Семья',family_followup:'Семейные задачи',work:'Доход',business:'Бизнес / руководство',expenses:'Обязательные расходы',budget_tracking:'Учёт денег',tools:'Финансовые инструменты',investment_experience:'Опыт и критерии',goal_gate:'Финансовая цель',capital_goal:'Финансовая цель',goal_barriers:'Риски цели',future_work:'Будущий доход',future_income:'Будущий доход',reserve_gate:'Финансовая подушка',reserve:'Финансовая подушка',calc:'Первый расчёт',protection_gate:'Финансовая защита',protected_capital_hook:'Капитал и защита',priority:'Приоритеты',result:'Карта',paid_offer:'Персональный разбор',gift:'Персональный разбор',finish:'Персональный разбор',complete:'Готово'};document.getElementById('stepLabel').textContent=labels[current]||'Финансовая карта'}
 
 
 function yekaterinburgTimestamp(date=new Date()){const parts=new Intl.DateTimeFormat('ru-RU',{timeZone:'Asia/Yekaterinburg',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(date),get=t=>parts.find(p=>p.type===t)?.value||'';return `${get('day')}.${get('month')}.${get('year')} ${get('hour')}:${get('minute')}:${get('second')}`}
