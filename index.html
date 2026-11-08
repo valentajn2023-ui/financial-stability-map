@@ -66,7 +66,7 @@ button,input,textarea,select{font:inherit}.appbar{position:sticky;top:0;z-index:
 <div class="toast" id="toast"></div>
 <script>
 /* CORE_START */
-const RELEASE_VERSION='0.8.65';
+const RELEASE_VERSION='0.8.66';
 const APP_VERSION=`MVP-${RELEASE_VERSION}`;
 const ARTIFACT_ID='ART-DATA-FINANCIAL-STABILITY-MAP-MVP-001';
 const ARTIFACT_FULL_ID=`${ARTIFACT_ID}-v${RELEASE_VERSION}`;
@@ -624,7 +624,7 @@ function render(){
   document.querySelector('.client-card')?.classList.toggle('report-view',current==='result');
   persist();
   backBtn.disabled=history.length===0;
-  nextBtn.style.display=['complete','paid_offer','gift','finish'].includes(current)?'none':'inline-block';
+  nextBtn.style.display=['complete','paid_offer','gift','finish','priority'].includes(current)?'none':'inline-block';
   backBtn.style.display=current==='start'?'none':'inline-block';
   nextBtn.textContent=current==='start'?'Начать':current==='result'?'Что дальше':'Дальше';
   nextBtn.disabled=false;
@@ -705,7 +705,7 @@ function render(){
 
     case 'protection_gate': h=wrap('Есть ли у вас отдельная финансовая защита по рискам, которые вы не контролируете?','',`${options('protectionGate',[['yes','Да'],['no','Нет'],['unknown','Не уверен / нужно проверить']],state.protectionGate?[state.protectionGate]:[],'radio')}<div id="protectionTypesBox" class="${state.protectionGate==='yes'?'':'hidden'}"><div class="divider"></div><label class="title">Какие виды страховой защиты у вас уже есть?</label><div class="helper" style="margin-bottom:12px">Отметьте то, что знаете.</div>${options('insuranceTypes',[['property','Страхование квартиры/дома'],['mortgage','Ипотечное страхование'],['kasko','КАСКО'],['accident','Страхование от несчастных случаев (НС)'],['critical','Страхование на случай опасных заболеваний'],['life','Страхование жизни'],['other','Другое'],['unknown','Не знаю']],state.insurance?.types||[])}<div id="insuranceOtherBox" class="field other-detail hidden"><label class="title">Какой договор или вид защиты?</label><input id="insuranceOther" type="text" value="${esc(state.otherText?.insurance||'')}" placeholder="Коротко укажите"></div></div>`,'Финансовая защита');break;
     case 'protected_capital_hook': h=`<div class="eyebrow">КАПИТАЛ + ФИНАНСОВАЯ ЗАЩИТА</div><h2 class="hook-title"><span class="hook-title-main">Ещё один платёж?</span><span class="hook-title-sub">Или другая логика денег?</span></h2><p class="lead hook-lead">Обычно регулярный платёж воспринимается как расход:<br><strong>заплатил → деньги ушли</strong></p><div class="hook-bridge">Но существуют финансовые решения, в которых регулярные взносы могут работать сразу на две задачи:</div><div class="hook-duo"><div class="hook-card"><div class="hook-num">01</div><div class="hook-card-title">Формировать капитал</div><div class="hook-card-text">к выбранной цели</div></div><div class="hook-card"><div class="hook-num">02</div><div class="hook-card-title">Предусматривать финансовую защиту</div><div class="hook-card-text">на период формирования капитала</div></div></div><div class="hook-next">На следующем шаге вы сможете отметить, хотите ли разобрать такую конструкцию подробнее.</div>`;break;
-    case 'priority': {const selected=orderedHelpTopics(state);h=wrap('Что вам было бы полезнее разобрать дальше?','Выберите до 3 тем.<span class="lead-break">Отметьте те, которые сейчас кажутся вам наиболее актуальными.</span>',`${options('helpTopics',HELP_TOPIC_OPTIONS,selected,'checkbox','priority-grid')}<div id="priorityRanking" class="priority-ranking">${priorityRankingMarkup(selected,Object.fromEntries(selected.map((x,i)=>[x,i+1])))}</div>`,'Ваши приоритеты');break;}
+    case 'priority': {const selected=orderedHelpTopics(state);h=wrap('Что вам было бы полезнее разобрать дальше?','Выберите до 3 тем.<span class="lead-break">Сначала отметьте темы, затем расставьте их по важности. Ответы отправятся только после вашего подтверждения.</span>',`${options('helpTopics',HELP_TOPIC_OPTIONS,selected,'checkbox','priority-grid')}<div id="priorityRanking" class="priority-ranking">${priorityRankingMarkup(selected,Object.fromEntries(selected.map((x,i)=>[x,i+1])))}</div><div class="final-actions" style="margin-top:18px"><button class="btn btn-primary" id="priorityConfirmBtn">Готово, показать мою карту</button></div>`,'Ваши приоритеты');break;}
     case 'capital_goal': h=wrap('Соберём только параметры выбранной цели','Сумма, срок, уже накопленный капитал и регулярный ресурс.',`<div class="field"><label class="title">Что это за цель?</label><input id="goal" type="text" value="${esc(state.capital?.goal||'')}" placeholder="Например, дача / образование / капитал к определённой дате"></div><div class="grid2">${moneyInput('T','Какая сумма нужна',state.capital?.T)}${numberInput('N','К какому сроку хотите прийти к цели?',state.capital?.N,'Укажите срок в месяцах. Например, 24 = 2 года.','Например, 24')}</div><div class="grid2">${moneyInput('C0','Сколько уже отдельно есть на цель',state.capital?.C0)}${moneyInput('c','Сколько регулярно направляете в месяц',state.capital?.c)}</div><div class="field"><label class="title" for="annualReturnPct">Условная доходность для второго сценария, % годовых</label><input id="annualReturnPct" type="number" min="0" max="100" step="0.1" inputmode="decimal" value="${state.capital?.assumedReturnRatePct ?? 8}" placeholder="8"><div class="helper">По умолчанию 8%. Значение можно изменить: второй сценарий пересчитается автоматически. Это предположение для сравнения, а не обещание будущей доходности.</div></div>`,'Финансовая цель');break;
     case 'result': h=`<div id="finmapSyncConfirmed" class="note" style="margin-bottom:16px;background:#eaf7f1;border:1px solid #cbe9dc;color:#205f49"><strong>✓ Ответы отправлены Валентину</strong><div style="margin-top:5px">Данные получены. Теперь можно сохранить карту.</div></div><div class="pr-header-meta">${new Date().toLocaleDateString('ru-RU')}</div><div class="pr-titlebar"><div><h2>${state.clientName?`<span class="pr-client-name">${esc(state.clientName)},</span> это ваша персональная карта`:'Это ваша персональная карта'}</h2><p class="lead">Итог по вашим ответам: где уже есть опора, где есть уязвимость и что важно обсудить дальше.</p></div><div class="pr-title-shield">${reportIcon('brandShield')}</div></div>${professionalReportMarkup(state)}<div class="final-actions pr-result-actions"><button class="btn btn-primary pr-download-primary" onclick="downloadClientMap()">Скачать карту (PNG)</button></div>`;break;
     case 'gift':
@@ -752,7 +752,7 @@ function paidReviewOfferHtml(){
       '<div class="bullet"><b>6</b><span>Я дам персональные рекомендации и помогу расставить следующие шаги по приоритету.</span></div>'+
       '<div class="bullet"><b>7</b><span>Вы сможете задать вопросы по своей ситуации и получить понятные ответы без сложных финансовых терминов.</span></div>'+
       '<div class="bullet"><b>8</b><span>После встречи я подготовлю для вас персональную Карту действий: что делать сейчас, что оставить на потом и что пока можно не менять.</span></div>'+
-      '<p style="margin:20px 0 0"><strong>В результате у вас будет понятная последовательность следующих действий именно для вашей ситуации.</strong></p>'+
+      '<p style="margin:20px 0 0"><strong>После разбора у вас будет ясность, что важно сделать в первую очередь, какие варианты стоит рассмотреть и с каких шагов разумно начать.</strong></p>'+
       '<div style="font-size:28px;font-weight:850;margin:22px 0 8px">3 000 ₽</div>'+
       '<div class="final-actions"><button class="btn btn-primary" onclick="paidReviewAction(1)">Оплатить разбор и выбрать время</button></div>'+
       '<div style="margin-top:12px"><button class="btn btn-ghost" onclick="paidReviewAction(2)">Не уверены, подойдёт ли вам такой формат? Напишите мне</button></div>'+
@@ -798,6 +798,7 @@ function wireDynamic(){
     };
     const redraw=(changed)=>{let selected=boxes.filter(x=>x.checked);if(selected.length>3){if(changed)changed.checked=false;notify('Можно выбрать не больше трёх тем');selected=boxes.filter(x=>x.checked)}const rankMap=readRankMap();if(rankBox)rankBox.innerHTML=priorityRankingMarkup(selected.map(x=>x.value),rankMap);wireRanks();};
     boxes.forEach(x=>x.addEventListener('change',()=>redraw(x)));wireRanks();
+    document.getElementById('priorityConfirmBtn')?.addEventListener('click',goNext);
   }
 }
 function requireNum(id,label){const x=n(val(id));if(x===null||x<0){notify(`Введите: ${label}`);document.getElementById(id)?.focus();return false}return true}
