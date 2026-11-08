@@ -66,7 +66,7 @@ button,input,textarea,select{font:inherit}.appbar{position:sticky;top:0;z-index:
 <div class="toast" id="toast"></div>
 <script>
 /* CORE_START */
-const RELEASE_VERSION='0.8.64';
+const RELEASE_VERSION='0.8.65';
 const APP_VERSION=`MVP-${RELEASE_VERSION}`;
 const ARTIFACT_ID='ART-DATA-FINANCIAL-STABILITY-MAP-MVP-001';
 const ARTIFACT_FULL_ID=`${ARTIFACT_ID}-v${RELEASE_VERSION}`;
@@ -732,25 +732,31 @@ function paidReviewOfferHtml(){
     persist();
     setTimeout(()=>{try{void syncToGoogle()}catch(e){}},0);
   }
+  const offerName=String(state.clientName||'').trim();
+  const offerTitle=offerName?esc(offerName)+', ваша финансовая карта готова':'Ваша финансовая карта готова';
   return wrap(
-    'Ваша финансовая карта готова',
-    'Теперь у вас есть картина текущей ситуации: доходы, обязательный минимум, резерв, нагрузка, ресурсы и приоритетные темы.',
+    offerTitle,
+    'Теперь у вас перед глазами ваша текущая финансовая ситуация: доходы, обязательные расходы, резерв, нагрузка, ресурсы, цели и темы, которые для вас сейчас наиболее важны.',
     '<div class="gift" style="padding:24px">'+
-      '<p style="margin-top:0">Карта показывает, где вы находитесь сейчас.</p>'+
-      '<p>Я намеренно не добавляю сюда автоматические персональные советы. Одинаковые цифры у двух людей могут требовать совершенно разных решений.</p>'+
-      '<p>Если хотите понять, что делать дальше именно в вашей ситуации, можно пройти персональный разбор финансовой карты. На нём мы уже не просто смотрим на цифры, а переводим их в понятные решения и приоритеты.</p>'+
+      '<p style="margin-top:0">Сама карта отвечает на вопрос: <strong>«Где я нахожусь сейчас?»</strong></p>'+
+      '<p>Но цифры сами по себе ещё не отвечают на главный вопрос: <strong>«Что именно мне делать дальше?»</strong></p>'+
+      '<p>На персональном разборе мы пойдём дальше и разберём уже вашу конкретную ситуацию.</p>'+
       '<div class="divider"></div>'+
       '<h3 style="margin:0 0 6px">Персональный разбор финансовой карты</h3>'+
-      '<p style="margin:0 0 14px;font-weight:750;color:#375b87">60 минут онлайн</p>'+
+      '<p style="margin:0 0 14px;font-weight:750;color:#375b87">Ориентировочно 40–60 минут онлайн</p>'+
       '<div class="bullet"><b>1</b><span>Проверим ключевые цифры и важные детали вашей ситуации.</span></div>'+
-      '<div class="bullet"><b>2</b><span>Разберём, что в вашей финансовой системе уже работает хорошо, а где есть слабые места и риски.</span></div>'+
-      '<div class="bullet"><b>3</b><span>Определим, что действительно требует внимания сейчас, а что можно пока не трогать.</span></div>'+
-      '<div class="bullet"><b>4</b><span>Подробно разберём 1–2 задачи, которые для вас сейчас важнее всего.</span></div>'+
-      '<div class="bullet"><b>5</b><span>Посмотрим возможные варианты действий и чем они отличаются друг от друга.</span></div><div class="bullet"><b>6</b><span>Дам персональные рекомендации и расставлю шаги по приоритету.</span></div><div class="bullet"><b>7</b><span>Вы сможете задать вопросы по своей ситуации и получить понятные ответы без сложных терминов.</span></div><div class="bullet"><b>8</b><span>После встречи получите одностраничную Карту действий: что делать сейчас, что позже и что можно не менять.</span></div>'+
+      '<div class="bullet"><b>2</b><span>Разберём, что у вас уже работает хорошо, а где есть слабые места и риски.</span></div>'+
+      '<div class="bullet"><b>3</b><span>Определим, какие задачи действительно требуют внимания сейчас, а что пока можно не трогать.</span></div>'+
+      '<div class="bullet"><b>4</b><span>Выберем 1–2 самые важные для вас задачи и разберём их подробнее.</span></div>'+
+      '<div class="bullet"><b>5</b><span>Посмотрим возможные варианты действий и разберём, чем они отличаются именно в вашей ситуации.</span></div>'+
+      '<div class="bullet"><b>6</b><span>Я дам персональные рекомендации и помогу расставить следующие шаги по приоритету.</span></div>'+
+      '<div class="bullet"><b>7</b><span>Вы сможете задать вопросы по своей ситуации и получить понятные ответы без сложных финансовых терминов.</span></div>'+
+      '<div class="bullet"><b>8</b><span>После встречи я подготовлю для вас персональную Карту действий: что делать сейчас, что оставить на потом и что пока можно не менять.</span></div>'+
+      '<p style="margin:20px 0 0"><strong>В результате у вас будет понятная последовательность следующих действий именно для вашей ситуации.</strong></p>'+
       '<div style="font-size:28px;font-weight:850;margin:22px 0 8px">3 000 ₽</div>'+
       '<div class="final-actions"><button class="btn btn-primary" onclick="paidReviewAction(1)">Оплатить разбор и выбрать время</button></div>'+
-      '<div style="margin-top:12px"><button class="btn btn-ghost" onclick="paidReviewAction(2)">Не уверены, подойдёт ли вам разбор? Напишите мне</button></div>'+
-      '<div class="helper" style="margin-top:12px">Сейчас откроется Telegram. Я пришлю ссылку на оплату и варианты времени.</div>'+
+      '<div style="margin-top:12px"><button class="btn btn-ghost" onclick="paidReviewAction(2)">Не уверены, подойдёт ли вам такой формат? Напишите мне</button></div>'+
+      '<div class="helper" style="margin-top:12px">Сейчас откроется Telegram. Там согласуем удобное время, и я отправлю ссылку на оплату.</div>'+
     '</div>',
     'Следующий шаг'
   );
