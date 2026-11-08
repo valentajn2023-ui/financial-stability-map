@@ -66,7 +66,7 @@ button,input,textarea,select{font:inherit}.appbar{position:sticky;top:0;z-index:
 <div class="toast" id="toast"></div>
 <script>
 /* CORE_START */
-const RELEASE_VERSION='0.8.66';
+const RELEASE_VERSION='0.8.67';
 const APP_VERSION=`MVP-${RELEASE_VERSION}`;
 const ARTIFACT_ID='ART-DATA-FINANCIAL-STABILITY-MAP-MVP-001';
 const ARTIFACT_FULL_ID=`${ARTIFACT_ID}-v${RELEASE_VERSION}`;
@@ -865,14 +865,26 @@ function nextStep(step){
   return m[step]||'complete';
 }
 async function goNext(){
-  if(!collect())return;
+  const priorityBtn=current==='priority'?document.getElementById('priorityConfirmBtn'):null;
+  if(priorityBtn){priorityBtn.disabled=true;priorityBtn.textContent='Проверяем ответы…';}
+  if(!collect()){
+    if(priorityBtn){priorityBtn.disabled=false;priorityBtn.textContent='Готово, показать мою карту';}
+    return;
+  }
   if(current==='finish'){history.push(current);current='complete';render();return}
   const target=nextStep(current);
   const needsSync=state.googleSyncStatus!=='confirmed'&&(target==='result'||current==='result');
   if(needsSync){
-    nextBtn.disabled=true;nextBtn.textContent=current==='result'?'Обновляем ответы…':'Отправляем ответы…';saveDraft(true);
+    nextBtn.disabled=true;nextBtn.textContent=current==='result'?'Обновляем ответы…':'Отправляем ответы…';
+    if(priorityBtn)priorityBtn.textContent='Отправляем ответы…';
+    saveDraft(true);
     const ok=await syncToGoogle();
-    if(!ok){nextBtn.disabled=false;nextBtn.textContent='Повторить отправку';notify('Не удалось подтвердить отправку. Ответы сохранены на этом устройстве. Нажмите «Повторить отправку».');return}
+    if(!ok){
+      nextBtn.disabled=false;nextBtn.textContent='Повторить отправку';
+      if(priorityBtn){priorityBtn.disabled=false;priorityBtn.textContent='Повторить отправку';}
+      notify('Не удалось подтвердить отправку. Ответы сохранены на этом устройстве. Нажмите «Повторить отправку».');
+      return;
+    }
   }
   history.push(current);current=target;render();
 }
