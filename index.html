@@ -66,7 +66,7 @@ button,input,textarea,select{font:inherit}.appbar{position:sticky;top:0;z-index:
 <div class="toast" id="toast"></div>
 <script>
 /* CORE_START */
-const RELEASE_VERSION='0.8.68';
+const RELEASE_VERSION='0.8.69';
 const APP_VERSION=`MVP-${RELEASE_VERSION}`;
 const ARTIFACT_ID='ART-DATA-FINANCIAL-STABILITY-MAP-MVP-001';
 const ARTIFACT_FULL_ID=`${ARTIFACT_ID}-v${RELEASE_VERSION}`;
@@ -725,9 +725,9 @@ function render(){
 
 
 function paidReviewOfferHtml(){
-  const known=['ОФФЕР_РАЗБОРА_ПОКАЗАН','ОЖИДАЕТ_ОПЛАТУ','ВОПРОС_ПО_РАЗБОРУ'];
+  const known=['ПРЕДЛОЖЕН_КОРОТКИЙ_РАЗБОР','ЗАПРОСИЛ_КОРОТКИЙ_РАЗБОР'];
   if(!known.includes(state.commercialStatus)){
-    state.commercialStatus='ОФФЕР_РАЗБОРА_ПОКАЗАН';
+    state.commercialStatus='ПРЕДЛОЖЕН_КОРОТКИЙ_РАЗБОР';
     state.updatedAt=now();
     persist();
     setTimeout(()=>{try{void syncToGoogle()}catch(e){}},0);
@@ -736,33 +736,29 @@ function paidReviewOfferHtml(){
   const offerTitle=offerName?esc(offerName)+', ваша финансовая карта готова':'Ваша финансовая карта готова';
   return wrap(
     offerTitle,
-    'Теперь у вас перед глазами ваша текущая финансовая ситуация: доходы, обязательные расходы, резерв, нагрузка, ресурсы, цели и темы, которые для вас сейчас наиболее важны.',
-    '<div class="gift" style="padding:24px">'+
-      '<p style="margin-top:0">Сама карта отвечает на вопрос: <strong>«Где я нахожусь сейчас?»</strong></p>'+
-      '<p>Но цифры сами по себе ещё не отвечают на главный вопрос: <strong>«Что именно мне делать дальше?»</strong></p>'+
-      '<p>На персональном разборе мы пойдём дальше и разберём уже вашу конкретную ситуацию.</p>'+
+    'Теперь у вас есть картина вашей текущей финансовой ситуации: доходы, обязательные расходы, резерв, нагрузка, ресурсы и приоритетные темы.',
+    '<div class="gift short-review-card" style="padding:24px">'+
+      '<p style="margin-top:0">Карта отвечает на вопрос: <strong>«Где я нахожусь сейчас?»</strong></p>'+
       '<div class="divider"></div>'+
-      '<h3 style="margin:0 0 6px">Персональный разбор финансовой карты</h3>'+
-      '<p style="margin:0 0 14px;font-weight:750;color:#375b87">Ориентировочно 40–60 минут онлайн</p>'+
-      '<div class="bullet"><b>1</b><span>Проверим ключевые цифры и важные детали вашей ситуации.</span></div>'+
-      '<div class="bullet"><b>2</b><span>Разберём, что у вас уже работает хорошо, а где есть слабые места и риски.</span></div>'+
-      '<div class="bullet"><b>3</b><span>Определим, какие задачи действительно требуют внимания сейчас, а что пока можно не трогать.</span></div>'+
-      '<div class="bullet"><b>4</b><span>Выберем 1–2 самые важные для вас задачи и разберём их подробнее.</span></div>'+
-      '<div class="bullet"><b>5</b><span>Посмотрим возможные варианты действий и разберём, чем они отличаются именно в вашей ситуации.</span></div>'+
-      '<div class="bullet"><b>6</b><span>Я дам персональные рекомендации и помогу расставить следующие шаги по приоритету.</span></div>'+
-      '<div class="bullet"><b>7</b><span>Вы сможете задать вопросы по своей ситуации и получить понятные ответы без сложных финансовых терминов.</span></div>'+
-      '<div class="bullet"><b>8</b><span>После встречи я подготовлю для вас персональную Карту действий: что делать сейчас, что оставить на потом и что пока можно не менять.</span></div>'+
-      '<p style="margin:20px 0 0"><strong>После разбора у вас будет ясность, что важно сделать в первую очередь, какие варианты стоит рассмотреть и с каких шагов разумно начать.</strong></p>'+
-      '<div style="font-size:28px;font-weight:850;margin:22px 0 8px">3 000 ₽</div>'+
-      '<div class="final-actions"><button class="btn btn-primary" onclick="paidReviewAction(1)">Оплатить разбор и выбрать время</button></div>'+
-      '<div style="margin-top:12px"><button class="btn btn-ghost" onclick="paidReviewAction(2)">Не уверены, подойдёт ли вам такой формат? Напишите мне</button></div>'+
-      '<div class="helper" style="margin-top:12px">Сейчас откроется Telegram. Там согласуем удобное время, и я отправлю ссылку на оплату.</div>'+
+      '<h3 style="margin:0 0 6px">Хотите коротко разобрать результаты вместе?</h3>'+
+      '<p style="margin:0 0 16px;font-weight:750;color:#375b87">10–15 минут онлайн, бесплатно</p>'+
+      '<div class="bullet"><b>1</b><span>Проверим ключевые цифры, чтобы выводы карты опирались на правильные данные.</span></div>'+
+      '<div class="bullet"><b>2</b><span>Если понадобится, уточню несколько деталей по вашей карте, чтобы точнее понять ситуацию и не делать выводы только по цифрам.</span></div>'+
+      '<div class="bullet"><b>3</b><span>Я поясню, что вижу в вашей ситуации и на какие моменты стоит обратить внимание.</span></div>'+
+      '<div class="bullet"><b>4</b><span>Определим, какой вопрос для вас сейчас действительно важнее остальных.</span></div>'+
+      '<div class="bullet"><b>5</b><span>Поймём, нужен ли вам более глубокий персональный разбор или информации из карты уже достаточно.</span></div>'+
+      '<div class="note" style="margin-top:18px">На этом коротком созвоне я не составляю финансовый план и не даю полный набор персональных рекомендаций. Если после разговора станет понятно, что вам нужен подробный разбор, персональные рекомендации или экспресс-ЛФП, я отдельно расскажу о формате и стоимости. Продолжать или нет, решите уже после этого.</div>'+
+      '<div class="final-actions" style="margin-top:22px"><button class="btn btn-primary" onclick="shortReviewAction()">Разобрать мою карту</button></div>'+
+      '<div class="helper" style="margin-top:10px">Сейчас откроется Telegram. Там согласуем удобные 10–15 минут для короткого разбора.</div>'+
+      '<div class="divider"></div>'+
+      '<p style="margin:0 0 10px;color:#5b6f88">Если вы ещё не сохранили карту, можете скачать её здесь.</p>'+
+      '<div class="final-actions" style="margin-top:0"><button class="btn btn-ghost" onclick="downloadClientMap()">Скачать мою карту</button></div>'+
     '</div>',
     'Следующий шаг'
   );
 }
-function paidReviewAction(kind){
-  state.commercialStatus=kind===1?'ОЖИДАЕТ_ОПЛАТУ':'ВОПРОС_ПО_РАЗБОРУ';
+function shortReviewAction(){
+  state.commercialStatus='ЗАПРОСИЛ_КОРОТКИЙ_РАЗБОР';
   state.updatedAt=now();
   persist();
   try{void syncToGoogle()}catch(e){}
@@ -770,7 +766,6 @@ function paidReviewAction(kind){
   const w=window.open(url,'_blank','noopener');
   if(!w)window.location.href=url;
 }
-
 function wireDynamic(){
   const wireOther=(group,boxId)=>{const box=document.getElementById(boxId);if(!box)return;const apply=()=>box.classList.toggle('hidden',![...document.querySelectorAll(`input[name="${group}"]:checked`)].some(x=>x.value==='other'));document.querySelectorAll(`input[name="${group}"]`).forEach(x=>x.addEventListener('change',apply));apply()};
   if(current==='context'){const sel=document.getElementById('contactChannel'),box=document.getElementById('contactValueBox');const apply=()=>{if(!sel||!box)return;box.style.opacity=sel.value==='known'?'.45':'1';document.getElementById('contactValue').disabled=sel.value==='known'};sel?.addEventListener('change',apply);apply();}
@@ -953,7 +948,7 @@ function newSession(){if(!confirm('Начать новую диагностик�
 
 
 nextBtn.addEventListener('click',goNext);backBtn.addEventListener('click',goBack);
-window.downloadClientMap=downloadClientMap;window.paidReviewAction=paidReviewAction;window.buildClientMapPngBlob=buildClientMapPngBlob;window.copyBrief=copyBrief;window.downloadBrief=downloadBrief;window.newSession=newSession;window.syncToGoogle=syncToGoogle;window.buildSyncPayload=buildSyncPayload;
+window.downloadClientMap=downloadClientMap;window.shortReviewAction=shortReviewAction;window.buildClientMapPngBlob=buildClientMapPngBlob;window.copyBrief=copyBrief;window.downloadBrief=downloadBrief;window.newSession=newSession;window.syncToGoogle=syncToGoogle;window.buildSyncPayload=buildSyncPayload;
 render();setTimeout(offerDraftResume,0);
 </script>
 </body></html>
